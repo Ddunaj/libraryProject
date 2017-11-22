@@ -5,7 +5,7 @@
 <?php
 $username = "root"; $password = ""; $host = "localhost";
 $dbname = "library_db";
-$link = mysqli_connect("$host","$username","$password","$dbname");
+$link = mysqli_connect($host,$username,$password,$dbname);
 
 /* check connection */
 if (mysqli_connect_errno()) {
@@ -156,15 +156,8 @@ echo ("Review: $Review"); echo "<br>";
 <?php
 if(isset($_POST['submit']))
 {
-//$authorQuery = "INSERT INTO authors (Name) Values ($Author)";
-//if(mysqli_query($link, $authorQuery)){
-//	echo "Insert Successful";
-//}
-//else{
-//	echo "Insert failed.";
-//}
-$query = "INSERT INTO books (Title, Series, Number of Pages,Genre, ISBN, Review)
-		  Values($Title, $Series, $NumberofPages, $Genre, $ISBN, $Review)";
+$query = "INSERT INTO books (Title, Series, Number of Pages,Genre, ISBN, Review) Values
+ ($Title, $Series, $NumberofPages, $Genre, $ISBN, $Review)";
 if(mysqli_query($link,$query)){
 	echo "Insert Successful";
 }

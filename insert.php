@@ -3,11 +3,22 @@
 <body>
 
 <?php
+$username = "root"; $password = ""; $host = "localhost";
+$dbname = "library_db";
+$link = mysqli_connect("$host","$username","$password","$dbname");
+
+/* check connection */
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s <br>", mysqli_connect_error());
+    exit();
+}
+echo "Connect successfully:";
+echo $link->host_info . "<br>";
          // define variables and set to empty values
 $TitleErr = $AuthorErr = $PublishDateErr = $ISBNErr = $NumberOfPagesErr = $GenreError = $ReviewErr = $SeriesErr = "";
 $Title = "";
 $Author = "";
-$PublishDate = "";
+$PublishDate = "0-0-0";
 $ISBN = 0;
 $Review = "";
 $Genre = "";
@@ -143,23 +154,26 @@ echo ("Review: $Review"); echo "<br>";
 ?>
 
 <?php
-$username = "root"; $password = ""; $host = "localhost:8080";
-$dbname = "library_db";
-$link = mysqli_connect("$host","$username","$password","$dbname");
-
-/* check connection */
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s <br>", mysqli_connect_error());
-    exit();
+if(isset($_POST['submit']))
+{
+//$authorQuery = "INSERT INTO authors (Name) Values ($Author)";
+//if(mysqli_query($link, $authorQuery)){
+//	echo "Insert Successful";
+//}
+//else{
+//	echo "Insert failed.";
+//}
+$query = "INSERT INTO books (Title, Series, Number of Pages,Genre, ISBN, Review)
+		  Values($Title, $Series, $NumberofPages, $Genre, $ISBN, $Review)";
+if(mysqli_query($link,$query)){
+	echo "Insert Successful";
 }
-echo "Connect successfully:";
+else{
+	echo "Insert failed.";
+}
+}
 
-$authorQuery = "INSERT INTO Authors (Author)
-				Values ($Author)";
-mysqli_query($link, $authorQuery);
-$query = "INSERT INTO Books (Title, Author, Series, NumberofPages, PublishDate, Genre, ISBN, Review)
-		  Values($Title, $Author, $Series, $NumberofPages, $PublishDate, $Genre, $ISBN, $Review)";
-mysqli_query($link,$query);
+
 
 mysqli_close($link);
 ?>

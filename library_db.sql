@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2017 at 05:57 PM
+-- Generation Time: Nov 28, 2017 at 10:39 PM
 -- Server version: 10.1.28-MariaDB
 -- PHP Version: 7.1.10
 
@@ -29,8 +29,12 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `authors` (
-  `Author_ID` int(11) NOT NULL,
-  `Name` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+  `Author_id` int(11) NOT NULL,
+  `Name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `Gender` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Hometown` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Birth_date` date DEFAULT NULL,
+  `ISBN` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -44,7 +48,8 @@ CREATE TABLE `books` (
   `Series` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ISBN` int(11) NOT NULL,
   `Publish_date` date DEFAULT NULL,
-  `Number_of_pages` int(11) DEFAULT NULL
+  `Number_of_pages` int(11) DEFAULT NULL,
+  `Genre` varchar(100) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -55,14 +60,19 @@ CREATE TABLE `books` (
 -- Indexes for table `authors`
 --
 ALTER TABLE `authors`
-  ADD PRIMARY KEY (`Author_ID`);
+  ADD PRIMARY KEY (`Author_id`),
+  ADD UNIQUE KEY `Author_id` (`Author_id`),
+  ADD UNIQUE KEY `ISBN` (`ISBN`),
+  ADD KEY `ISBN_2` (`ISBN`);
 
 --
 -- Indexes for table `books`
 --
 ALTER TABLE `books`
   ADD PRIMARY KEY (`ISBN`),
-  ADD UNIQUE KEY `ISBN` (`ISBN`);
+  ADD UNIQUE KEY `ISBN` (`ISBN`),
+  ADD KEY `Genre` (`Genre`),
+  ADD KEY `ISBN_2` (`ISBN`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -72,7 +82,23 @@ ALTER TABLE `books`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `Author_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `Author_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `authors`
+--
+ALTER TABLE `authors`
+  ADD CONSTRAINT `fk_book_isbn` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Constraints for table `books`
+--
+ALTER TABLE `books`
+  ADD CONSTRAINT `fk_genre_name` FOREIGN KEY (`Genre`) REFERENCES `genre` (`Name`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -10,13 +10,12 @@ if (mysqli_connect_errno()) {
     exit();
 }
 echo "Connect successfully:"; echo $link->host_info . "<br>";
-
 $Title = mysqli_real_escape_string($link, $_REQUEST['Title']);
-$Author = mysqli_real_escape_string($link, $_REQUEST['Author']);
 $Series = mysqli_real_escape_string($link, $_REQUEST['Series']);
 $NumberOfPages = $_REQUEST['NumberOfPages'];
 $PublishDate = $_REQUEST['PublishDate'];
 $ISBN = $_REQUEST['ISBN'];
+$Author_id = $_REQUEST['AuthorId'];
 
 function query_error($query, $link)
 {
@@ -24,16 +23,14 @@ function query_error($query, $link)
     {
         echo "Records added successfully.";
     } 
-else
+    else
     {
-        echo "ERROR: Could not execute. " . mysqli_error($link)  . "<br>";
+        die("ERROR: Could not execute. " . mysqli_error($link));
     }
 }
 
-$query = "INSERT INTO authors (Name) VALUES ('$Author')";
-query_error($query, $link);
-$query = "INSERT INTO books (Title, Series, Number_of_Pages, Publish_Date, ISBN) 
-          VALUES ('$Title', '$Series', '$NumberOfPages', '$PublishDate', '$ISBN')";
+$query = "INSERT INTO books (Title, Series, Number_of_Pages, Publish_Date, ISBN, Author_id) 
+          VALUES ('$Title', '$Series', '$NumberOfPages', '$PublishDate', '$ISBN', '$Author_id')";
 query_error($query,$link);
 
 // close connection

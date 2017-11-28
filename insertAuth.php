@@ -16,23 +16,26 @@ $Author = mysqli_real_escape_string($link, $_REQUEST['Author']);
 $Series = mysqli_real_escape_string($link, $_REQUEST['Series']);
 $NumberOfPages = $_REQUEST['NumberOfPages'];
 $PublishDate = $_REQUEST['PublishDate'];
-$Genre = mysqli_real_escape_string($link, $_REQUEST['Genre']);
 $ISBN = $_REQUEST['ISBN'];
-$Review = $_REQUEST['Review'];
 
-$aQuery = "INSERT INTO authors (Name) VALUES ('$Author')";
-if(mysqli_query($link, $aQuery)){
-    echo "Records added successfully.";
-} else{
-    echo "ERROR: Could not execute.";
+function query_error($query, $link)
+{
+    if(mysqli_query($link, $query))
+    {
+        echo "Records added successfully.";
+    } 
+else
+    {
+        echo "ERROR: Could not execute. " . mysqli_error($link)  . "<br>";
+    }
 }
-$query = "INSERT INTO books (Title, Author, Series, Number of Pages, Publish Date, Genre, ISBN, Review) 
-          VALUES ('$Title', '$Author', '$Series', '$NumberOfPages', '$PublishDate', '$Genre', '$ISBN', '$Review')";
-if(mysqli_query($link, $query)){
-    echo "Records added successfully.";
-} else{
-    echo "ERROR: Could not execute.";
-}
+
+$query = "INSERT INTO authors (Name) VALUES ('$Author')";
+query_error($query, $link);
+$query = "INSERT INTO books (Title, Series, Number_of_Pages, Publish_Date, ISBN) 
+          VALUES ('$Title', '$Series', '$NumberOfPages', '$PublishDate', '$ISBN')";
+query_error($query,$link);
+
 // close connection
 mysqli_close($link);
 ?>

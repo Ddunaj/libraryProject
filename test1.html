@@ -8,11 +8,11 @@
 <form action="insertAuth.php" method="post">
 	<p>
         <label for="Title">Title:</label>
-        <input type="text" name="Title" id="Title">
+        <input type="text" name="Title" id="Title" required>
     </p>
     <p>
         <label for="Author">Author:</label>
-        <input type="text" name="Author" id="Author">
+        <input type="text" name="Author" id="Author" required>
     </p>
 	<p>
         <label for="Series">Series:</label>
@@ -33,10 +33,6 @@
 	<p>
         <label for="ISBN">ISBN:</label>
         <input type="number" name="ISBN" id="ISBN">
-    </p>
-	<p>
-        <label for="Review">Review:</label>
-        <input type="text" name="Review" id="Review">
     </p>
     <input type="submit" value="Submit">
 </form>

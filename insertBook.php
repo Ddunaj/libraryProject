@@ -16,7 +16,7 @@ $NumberOfPages = $_REQUEST['NumberOfPages'];
 $PublishDate = $_REQUEST['PublishDate'];
 $ISBN = $_REQUEST['ISBN'];
 $Genre = mysqli_real_escape_string($link, $_REQUEST['Genre']);
-$authorQuery = "INSERT INTO authors (Name) VALUES ('$Author')";
+//$authorQuery = "INSERT INTO authors (Name) VALUES ('$Author')";
 
 $query = "INSERT INTO books (Title, Series, Number_of_Pages, Publish_Date, ISBN, Genre) 
           VALUES ('$Title', '$Series', '$NumberOfPages', '$PublishDate', '$ISBN', '$Genre')";

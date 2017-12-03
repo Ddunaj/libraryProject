@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 30, 2017 at 01:55 AM
+-- Generation Time: Dec 03, 2017 at 10:30 AM
 -- Server version: 10.1.28-MariaDB
 -- PHP Version: 7.1.10
 
@@ -136,8 +136,9 @@ INSERT INTO `genre` (`Name`) VALUES
 --
 
 CREATE TABLE `loan` (
-  `ISBN` int(11) DEFAULT NULL,
-  `Id` int(11) DEFAULT NULL
+  `ISBN` int(11) NOT NULL,
+  `Id` int(11) NOT NULL,
+  `due_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -147,8 +148,8 @@ CREATE TABLE `loan` (
 --
 
 CREATE TABLE `part_of` (
-  `ISBN` int(11) DEFAULT NULL,
-  `Genre` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL
+  `ISBN` int(11) NOT NULL,
+  `Genre` varchar(100) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -160,7 +161,7 @@ CREATE TABLE `part_of` (
 CREATE TABLE `publisher` (
   `Name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `Address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Year Est.` date DEFAULT NULL
+  `Year_Est.` year(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -172,8 +173,8 @@ CREATE TABLE `publisher` (
 CREATE TABLE `review` (
   `Rating` int(11) DEFAULT NULL,
   `Review_text` text COLLATE utf8_unicode_ci,
-  `ISBN` int(11) DEFAULT NULL,
-  `Reviewer_id` int(11) DEFAULT NULL
+  `ISBN` int(11) NOT NULL,
+  `Reviewer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -186,7 +187,7 @@ CREATE TABLE `user` (
   `Name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `Id` int(11) NOT NULL,
   `Address` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `Fine` int(11) DEFAULT NULL
+  `Fine` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -196,8 +197,8 @@ CREATE TABLE `user` (
 --
 
 CREATE TABLE `wrote` (
-  `Author_ID` int(11) DEFAULT NULL,
-  `ISBN` int(11) DEFAULT NULL
+  `Author_id` int(11) NOT NULL,
+  `ISBN` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -230,6 +231,7 @@ ALTER TABLE `genre`
 -- Indexes for table `loan`
 --
 ALTER TABLE `loan`
+  ADD PRIMARY KEY (`ISBN`,`Id`),
   ADD KEY `ISBN` (`ISBN`),
   ADD KEY `Library card#` (`Id`);
 
@@ -237,6 +239,7 @@ ALTER TABLE `loan`
 -- Indexes for table `part_of`
 --
 ALTER TABLE `part_of`
+  ADD PRIMARY KEY (`ISBN`,`Genre`),
   ADD KEY `ISBN` (`ISBN`),
   ADD KEY `Genre` (`Genre`);
 
@@ -250,7 +253,7 @@ ALTER TABLE `publisher`
 -- Indexes for table `review`
 --
 ALTER TABLE `review`
-  ADD KEY `fk_book_isbn2` (`ISBN`),
+  ADD PRIMARY KEY (`ISBN`,`Reviewer_id`),
   ADD KEY `Reviewer_id` (`Reviewer_id`);
 
 --
@@ -263,7 +266,8 @@ ALTER TABLE `user`
 -- Indexes for table `wrote`
 --
 ALTER TABLE `wrote`
-  ADD KEY `Author_ID` (`Author_ID`),
+  ADD PRIMARY KEY (`Author_id`,`ISBN`),
+  ADD KEY `Author_ID` (`Author_id`),
   ADD KEY `ISBN` (`ISBN`);
 
 --
@@ -274,13 +278,13 @@ ALTER TABLE `wrote`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `Author_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
+  MODIFY `Author_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -296,14 +300,14 @@ ALTER TABLE `books`
 -- Constraints for table `loan`
 --
 ALTER TABLE `loan`
-  ADD CONSTRAINT `fk_book_isbn` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_book_isbn` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`Id`) REFERENCES `user` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `part_of`
 --
 ALTER TABLE `part_of`
-  ADD CONSTRAINT `fk_books` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ISBN2` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_genre_name` FOREIGN KEY (`Genre`) REFERENCES `genre` (`Name`);
 
 --
@@ -311,14 +315,13 @@ ALTER TABLE `part_of`
 --
 ALTER TABLE `review`
   ADD CONSTRAINT `fk_book_isbn2` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_reviewer_id` FOREIGN KEY (`Reviewer_id`) REFERENCES `user` (`Id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_reviewer_id` FOREIGN KEY (`Reviewer_id`) REFERENCES `user` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `wrote`
 --
 ALTER TABLE `wrote`
-  ADD CONSTRAINT `fk_ISBN` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_author_id` FOREIGN KEY (`Author_ID`) REFERENCES `authors` (`Author_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_ISBN` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

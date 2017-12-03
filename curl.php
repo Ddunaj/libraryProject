@@ -1,6 +1,6 @@
 <?php
 $key = 'J1p2EyrPmY8WHFC5axXmw';
-header('Content-Type: text/plain');
+
 function api_call($path)
 {
         sleep(1);
@@ -14,9 +14,6 @@ function api_call($path)
         curl_close($ch);
         return $retValue;
 }
-
-$ISBN = '0721602401';
-getBookInfo($ISBN, $key);
 
 function getBookInfo($ISBN, $key)
 {

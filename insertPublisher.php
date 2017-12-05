@@ -13,8 +13,8 @@ function query_error($attr, $query, $link)
 {
     if(mysqli_query($link, $query))
     {
-        $last_id = mysqli_insert_id($link);
-        echo "Inserted successfully. <br></br>";
+    
+        echo $attr. "inserted successfully. <br></br>";
     }
     else
     {
@@ -23,10 +23,11 @@ function query_error($attr, $query, $link)
 }
 $query =  "SELECT Name FROM publisher WHERE Name = '$name'";
 $result =  mysqli_query($link, $query);
-if ($result == true & (mysqli_num_rows($result) < 0))
+if ($result == true & (mysqli_num_rows($result) <= 0))
 {
-    $query = "INSERT INTO Publisher (Name, Address, Year_Est.) VALUES ('$name', '$Address', '$year')";
-    query_error ($link, $query);
+    $attr = "Publisher ";
+    $query = "INSERT INTO Publisher (Name, Address, Year_Est) VALUES ('$name', '$address', '$year')";
+    query_error ($attr, $query, $link);
 }
 else
     echo "Publisher exist in the database <br></br>";

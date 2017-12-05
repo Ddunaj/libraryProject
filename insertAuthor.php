@@ -1,34 +1,38 @@
 <?php
-$username = "root"; $password = ""; $host = "localhost";
+$username = "root"; 
+$password = ""; 
+$host = "localhost";
 $dbname = "library_db";
 
 $link = mysqli_connect($host,$username,$password,$dbname);
 
-/* check connection */
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s <br>", mysqli_connect_error());
-    exit();
-}
-echo "Connect successfully:"; echo $link->host_info . "<br>";
-
-$Name = mysqli_real_escape_string($link, $_REQUEST['Name']);
-$Gender = mysqli_real_escape_string($link, $_REQUEST['Gender']);
-$Hometown = mysqli_real_escape_string($link, $_REQUEST['Hometown']);
-//$ISBN = $_REQUEST['ISBN'];
-$BirthDate = $_REQUEST['BirthDate'];
-
-$authorQuery = "INSERT INTO authors (Name, Gender, Hometown, Birth_Date) 
-				VALUES ('$Name', '$Gender', '$Hometown', '$BirthDate')";
-
-if(mysqli_query($link, $authorQuery))
+$ID = $_REQUEST['author_id'];
+$name = mysqli_real_escape_string($link, $_REQUEST['Name']);
+$hometown = mysqli_real_escape_string($link, $_REQUEST['hometown']);
+$gender = $_REQUEST['gender'];
+$birth_date = $_REQUEST['birth_date'];
+function query_error($attr, $query, $link)
 {
-    echo "Records added successfully.";
-} 
+    if(mysqli_query($link, $query))
+    {
+        echo $attr . " inserted successfully. <br></br>";
+    }
     else
-{
-    die("ERROR: Could not execute. " . mysqli_error($link));
+    {
+        die("ERROR: Could not execute. " . mysqli_error($link) . "<br></br>");
+    }
 }
-
-// close connection
+$query =  "SELECT Author_id FROM authors WHERE Name = '$name' AND Hometown = '$hometown' AND Gender = '$gender' AND Birth_date = '$birth_date'";
+$result =  mysqli_query($link, $query);
+if ($result == true & mysqli_num_rows($result) <= 0)
+{
+    $query = "INSERT INTO authors(Name, Hometown, Gender, Birth_date) VALUES ('$name', '$hometown', '$gender', '$birth_date')";
+    $attr = "Author ";
+    query_error ($attr, $query, $link);
+}
+else
+    echo "This author is already in the database <br></br>";
 mysqli_close($link);
+    
+echo "<a href=\"homepage.html\">Return to Home Page</a>";
 ?>

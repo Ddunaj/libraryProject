@@ -12,27 +12,32 @@ if (mysqli_connect_errno()) {
 }
 
 $ID = $_REQUEST['ID'];
-$query =  "SELECT avg(rating) as average FROM review WHERE ISBN = '$ID'";
+$query =  "SELECT ISBN FROM review WHERE ISBN = '$ID'";
 $result =  mysqli_query($link, $query);
 if ($result == true & (mysqli_num_rows($result) > 0))
 {
-    while($row = mysqli_fetch_assoc($result)) 
-    {
-        echo "Average rating is " . $row['average'];
-    }
-    $query =  "SELECT Review_text, Reviewer_id FROM review WHERE ISBN = '$ID'";
+    $query =  "SELECT avg(rating) as average FROM review WHERE ISBN = '$ID'";
     $result =  mysqli_query($link, $query);
     if ($result == true & (mysqli_num_rows($result) > 0))
     {
-        while($row = mysqli_fetch_assoc($result))
+        while($row = mysqli_fetch_assoc($result)) 
         {
-            echo "Reviewer ID: " . $row['Reviewer_id'] . "<br>";
-            echo "Review: " . $row['Review_text'] . "<br>";
+            echo "Average rating is " . $row['average'] . '<br>';
+        }
+        $query =  "SELECT Review_text, Reviewer_id FROM review WHERE ISBN = '$ID'";
+        $result =  mysqli_query($link, $query);
+        if ($result == true & (mysqli_num_rows($result) > 0))
+        {
+            while($row = mysqli_fetch_assoc($result))
+            {
+                echo "Reviewer ID: " . $row['Reviewer_id'] . "<br>";
+                echo "Review: " . $row['Review_text'] . "<br>";
+            }
         }
     }
 }
 else
-    echo "Book is not found in the database";
+    echo "Book is not found in the database <br>";
 // close connection
 mysqli_close($link);
 echo "<a href=\"homepage.html\">Return to Home Page</a>";

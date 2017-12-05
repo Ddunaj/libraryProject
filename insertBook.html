@@ -2,14 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Upate Book Form</title>
+<title>Add Record Form</title>
 </head>
 <body>
-<form action="updateBook.php" method="post">
-    <h1>Update Book Information</h1>
-    <p>
-        Enter new information in field you want to change only.
-    </p>
+<h1>Book Info</h1>
+<form action="insertBook.php" method="post">
     <p>
         <label for="ISBN">ISBN:</label>
         <input type="number" name="ISBN" id="ISBN">
@@ -48,7 +45,7 @@
         <input type="number" name="author_id" id="author_id">
         <input type="number" name="author_id" id="author_id">
     </p>
-    <input type= "submit" value="Update Book Information">
+    <input type= "submit" value="Insert Book Information">
     <input type= "reset" value="Reset">
     <a href="homepage.html">Return to Home Page</a>
 </form>

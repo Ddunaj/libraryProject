@@ -13,7 +13,10 @@ $date = $_REQUEST['publish_date'];
 $pages = $_REQUEST['pages'];
 $publisher = mysqli_real_escape_string($link, $_REQUEST['publisher']);
 $author = $_REQUEST['author_id'];
-
+$genres = array();
+foreach($_POST['genre'] AS $val) {
+    $genres[] = mysqli_real_escape_string($link, $val);
+}
 function query_error($attr, $query, $link)
 {
     if(mysqli_query($link, $query))
@@ -26,6 +29,8 @@ function query_error($attr, $query, $link)
         die("ERROR: Could not execute. " . mysqli_error($link) . "<br></br>");
     }
 }
+$book_genre = array();
+$good_genre = array();
 $query =  "SELECT ISBN FROM books WHERE ISBN = '$ISBN'";
 $result =  mysqli_query($link, $query);
 if ($result == true & (mysqli_num_rows($result) > 0))
@@ -33,21 +38,59 @@ if ($result == true & (mysqli_num_rows($result) > 0))
     if ($name != NULL)
     {
         $attr = "Tilte";
-        $query =  "Update books SET " . $attr . " = '$name' WHERE ISBN = '$ISBN'";
+        $query =  "UPDATE books SET " . $attr . " = '$name' WHERE ISBN = '$ISBN'";
         query_error($attr, $query, $link);
     }
     if ($series != NULL)
     {
         $attr = "Series";
-        $query =  "Update books SET " . $attr. " = '$series' WHERE ISBN = '$ISBN'";
+        $query =  "UPDATE books SET " . $attr. " = '$series' WHERE ISBN = '$ISBN'";
         query_error($attr, $query, $link);
     }
     if ($date != NULL)
     {
         $attr = "Publish_date";
-        $query =  "Update books SET " . $attr. " = '$date' WHERE ISBN = '$ISBN'";
+        $query =  "UPDATE books SET " . $attr. " = '$date' WHERE ISBN = '$ISBN'";
         query_error($attr, $query, $link);
     }
+    if ($genres != NULL)
+    {
+        $query = "SELECT Name FROM genre WHERE Name = '$genre' LIMIT 1";
+        $result = mysqli_query($link,$query);
+        if ($result)
+        {
+            if ($result == true & (mysqli_num_rows($result) > 0))
+            {
+                while($row = mysqli_fetch_assoc($result)) 
+                {
+                    array_push($book_genre, $row['ISBN']);
+                }
+            }
+        }
+        foreach ($book_genre as $compare)
+        {
+            foreach ($genres as $key => $compared)
+            {
+                if ($compare == $compared)
+                {
+                    array_push($good_genre, $compared);
+                    unset($genres[$key]);
+                }
+            }
+        }
+        foreach ($good_genre as $update)
+        {
+            $attr = "Genre";
+            $query =  "UPDATE part_of SET " . $attr. " = '$update' WHERE ISBN = '$ISBN'";
+            query_error($attr, $query, $link);
+        }
+        foreach ($genres as $bad)
+        {
+            if ($bad != NULL)
+            echo "Genre: " . $bad . " is not in the database. <br></br>";
+        }
+    }
+
     if ($pages != NULL)
     {
         $attr = "Number_of_pages";
@@ -69,16 +112,19 @@ if ($result == true & (mysqli_num_rows($result) > 0))
     }
     if ($author != NULL)
     {
-        $query = "SELECT Author_id FROM authors WHERE Author_id = '$author'";
-        $result = mysqli_query($link, $query);
-        if ($result == true & (mysqli_num_rows($result) > 0))
+        foreach ($author as $author_id)
         {
-            $attr = "Author_id";
-            $query =  "Update wrote SET " . $attr. " = '$author' WHERE ISBN = '$ISBN'";
-            query_error($attr, $query, $link);
+            $query = "SELECT Author_id FROM authors WHERE Author_id = '$author_id'";
+            $result = mysqli_query($link, $query);
+            if ($result == true & (mysqli_num_rows($result) > 0))
+            {
+                    $attr = "Author_id";
+                    $query =  "Update wrote SET " . $attr. " = '$author_id' WHERE ISBN = '$ISBN'";
+                    query_error($attr, $query, $link);
+            }
+            else
+                echo "Author id" . $author_id . " was not found in the database";
         }
-        else
-            echo "Author was not found in the database";
     }
 }
 else

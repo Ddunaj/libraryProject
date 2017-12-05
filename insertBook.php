@@ -49,6 +49,7 @@ if ($genres != NULL)
     foreach ($genres as $genre)
     {
         $query = "SELECT Name FROM genre WHERE Name = '$genre' LIMIT 1";
+        echo mysqli_error($link);
         $result = mysqli_query($link, $query);
         if ($result)
         {
@@ -72,6 +73,7 @@ if ($genres != NULL)
             }
         }
     }
+   
     if ($good_genre != NULL)
     {
         $genre_is_good = true;
@@ -133,8 +135,6 @@ if ($authors != NULL)
             }
         }
     }
-    var_dump($author_id);
-    var_dump($authors);
     if ($good_author != NULL)
     {
         $author_is_good = true;
@@ -151,7 +151,7 @@ if ($authors != NULL)
 
 }
 
-var_dump($author_is_good);
+
 if ($author_is_good & $publisher_is_good & $genre_is_good)
 {
     $query = "INSERT INTO books (Title, Series, ISBN, Publish_date, Number_of_Pages, Publisher)

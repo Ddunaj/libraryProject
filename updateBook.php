@@ -26,6 +26,7 @@ function query_error($attr, $query, $link)
     }
     else
     {
+        echo $query;
         die("ERROR: Could not execute. " . mysqli_error($link) . "<br></br>");
     }
 }
@@ -37,7 +38,7 @@ if ($result == true & (mysqli_num_rows($result) > 0))
 {
     if ($name != NULL)
     {
-        $attr = "Tilte";
+        $attr = "Title";
         $query =  "UPDATE books SET " . $attr . " = '$name' WHERE ISBN = '$ISBN'";
         query_error($attr, $query, $link);
     }
@@ -55,15 +56,18 @@ if ($result == true & (mysqli_num_rows($result) > 0))
     }
     if ($genres != NULL)
     {
-        $query = "SELECT Name FROM genre WHERE Name = '$genre' LIMIT 1";
-        $result = mysqli_query($link,$query);
-        if ($result)
+        foreach ($genres as $genre)
         {
-            if ($result == true & (mysqli_num_rows($result) > 0))
+            $query = "SELECT Name FROM genre WHERE Name = '$genre' LIMIT 1";
+            $result = mysqli_query($link,$query);
+            if ($result)
             {
-                while($row = mysqli_fetch_assoc($result)) 
+                if ($result == true & (mysqli_num_rows($result) > 0))
                 {
-                    array_push($book_genre, $row['ISBN']);
+                    while($row = mysqli_fetch_assoc($result)) 
+                    {
+                        array_push($book_genre, $row['Name']);
+                    }
                 }
             }
         }

@@ -33,7 +33,7 @@ function deleteStuff($from, $attribute, $compare, $link)
     $result =  mysqli_query($link, $query);
     if ($result == true & (mysqli_num_rows($result) > 0))
     {
-        $query =  "DELETE FROM " . $from .  "WHERE " . $attribute . "= " . $compare;
+        $query =  "DELETE FROM " . $from .  "WHERE " . $attribute . "=  '$compare'";
         query_error($query, $link);
     }
     else

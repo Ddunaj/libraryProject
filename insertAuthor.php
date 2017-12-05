@@ -22,11 +22,18 @@ function query_error($attr, $query, $link)
         die("ERROR: Could not execute. " . mysqli_error($link) . "<br></br>");
     }
 }
+$query = "SELECT Author_id FROM authors WHERE Author_id = '$ID'";
+$result =  mysqli_query($link, $query);
+echo mysqli_error($link);
+if ($result == true & mysqli_num_rows($result) > 0)
+{
+    echo "This author id is already been used a new choose instead.";
+}
 $query =  "SELECT Author_id FROM authors WHERE Name = '$name' AND Hometown = '$hometown' AND Gender = '$gender' AND Birth_date = '$birth_date'";
 $result =  mysqli_query($link, $query);
 if ($result == true & mysqli_num_rows($result) <= 0)
 {
-    $query = "INSERT INTO authors(Name, Hometown, Gender, Birth_date) VALUES ('$name', '$hometown', '$gender', '$birth_date')";
+    $query = "INSERT INTO authors(Author_id, Name, Hometown, Gender, Birth_date) VALUES ('$ID', '$name', '$hometown', '$gender', '$birth_date')";
     $attr = "Author ";
     query_error ($attr, $query, $link);
 }

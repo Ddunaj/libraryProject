@@ -16,7 +16,11 @@ $series = mysqli_real_escape_string($link, $_REQUEST['series']);
 $date = $_REQUEST['publish_date'];
 $pages = $_REQUEST['pages'];
 $publisher = mysqli_real_escape_string($link, $_REQUEST['publisher']);
-$author = $_REQUEST['author_id'];
+$authors = array();
+foreach($_POST['author_id'] as $val)
+{
+        $authors[] = $val;
+}
 $genres = array();
 
 foreach($_POST['genre'] AS $val) {
@@ -52,7 +56,7 @@ if ($genres != NULL)
             {
                 while($row = mysqli_fetch_assoc($result)) 
                 {
-                    array_push($book_genre , $row['ISBN']);
+                    array_push($book_genre , $row['Name']);
                 }
             }
         }
@@ -75,9 +79,11 @@ if ($genres != NULL)
     foreach ($genres as $bad)
     {
         if ($bad != NULL)
+        {
         echo "Genre: " . $bad . " is not in the database. <br>";
         echo "You can see the list of valid genre ";
         echo "<a href=\"showGenre.php\">here</a><br>";
+        }
     }
 }
 if ($publisher != NULL)
@@ -95,22 +101,57 @@ if ($publisher != NULL)
         echo "<a href=\"insertPublisher.html\">here first.</a><br>";
     }
 }
-if ($author != NULL)
+
+$author_id = array();
+$good_author = array();
+
+if ($authors != NULL)
 {
-    $query = "SELECT Author_id FROM authors WHERE Author_id = '$author'";
-    $result = mysqli_query($link, $query);
-    if ($result == true & (mysqli_num_rows($result) > 0))
+    foreach ($authors as $author)
     {
-        $author_is_good;
+        $query = "SELECT Author_id FROM authors WHERE Author_id = '$author' LIMIT 1";
+        $result = mysqli_query($link, $query);
+        if ($result)
+        {
+            if ($result == true & (mysqli_num_rows($result) > 0))
+            {
+                while($row = mysqli_fetch_assoc($result)) 
+                {
+                    array_push($author_id , $row['Author_id']);
+                }
+            }
+        }
     }
-    else
+    foreach ($author_id as $compare)
     {
-        echo "This author was not found in the database. ";
+        foreach ($authors as $key => $compared)
+        {
+            if ($compare == $compared)
+            {
+                array_push($good_author, $compared);
+                unset($authors[$key]);
+            }
+        }
+    }
+    var_dump($author_id);
+    var_dump($authors);
+    if ($good_author != NULL)
+    {
+        $author_is_good = true;
+    }
+    foreach ($authors as $bad)
+    {
+        if ($bad != NULL)
+        {
+        echo " Author: ". $bad . "was not found in the database. ";
         echo "you need to inserted it ";
         echo "<a href=\"insertAuthor.html\">here first.</a><br>";
+        }
     }
+
 }
 
+var_dump($author_is_good);
 if ($author_is_good & $publisher_is_good & $genre_is_good)
 {
     $query = "INSERT INTO books (Title, Series, ISBN, Publish_date, Number_of_Pages, Publisher)
@@ -125,7 +166,7 @@ if ($author_is_good & $publisher_is_good & $genre_is_good)
         if ($result == true)
             echo "Book-Genre Relation was inserted into part_of <br>";
     }
-    foreach ($author as $author_id)
+    foreach ($authors as $author_id)
     {
         $query = "INSERT INTO wrote (ISBN, Author_id) VALUES ('$ISBN', '$author_id')";
         $result = mysqli_query($link, $query);
@@ -134,7 +175,7 @@ if ($author_is_good & $publisher_is_good & $genre_is_good)
     }
 }
 else
-    echo "There was a error in input. See above for more information";
+    echo "There was a error in input. See above for more information<br>";
 
 // close connection
 mysqli_close($link);

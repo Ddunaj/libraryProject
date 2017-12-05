@@ -8,7 +8,7 @@
 <form action="insertAuthor.php" method="post">
     <h1>Insert Author information</h1>
     <p>
-        <label for="Author_id">Author_ID:</label>
+        <label for="Author_id">Author_ID: (optional)</label>
         <input type="number" name="author_id" id="author_id">
     </p>
     <p>
@@ -20,7 +20,8 @@
         <input type="text" name="hometown" id="hometown">
     </p>
    <p>
-       gender:<br>
+       gender: (leave unseleted if you don't want to input<br>
+       <input type="hidden" name="gender" value="" checked>
         <input type="radio" name="gender" value="male" > Male<br>
         <input type="radio" name="gender" value="female"> Female<br>
         <input type="radio" name="gender" value="other"> Other<br>
